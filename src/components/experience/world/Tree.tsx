@@ -13,6 +13,10 @@ import { serviceModal } from "@/lib/serviceModal";
 
 const glowStart = getSceneRange("glow").start;
 const treeStart = getSceneRange("tree").start;
+// Keep the mature tree to the right of the left-aligned story cards in the
+// later scenes. Children use local coordinates, so this moves the complete
+// tree composition (trunk, canopy, service nodes, and case-study fruit) as one.
+const TREE_POSITION = new THREE.Vector3(2.4, 0, 0);
 
 function treeGrowth(p: number) {
   if (p < glowStart) return 0;
@@ -103,10 +107,14 @@ function ServiceIsland({
   });
 
   const openService = () => {
-    const dir = pos.clone().setY(0).normalize();
+    const worldPos = pos.clone().add(TREE_POSITION);
+    const dir = worldPos.clone().setY(0).normalize();
     if (dir.lengthSq() === 0) dir.set(0, 0, 1);
-    const camPos = pos.clone().add(dir.multiplyScalar(2.6)).add(new THREE.Vector3(0, 0.5, 0));
-    cameraFocus.focus([camPos.x, camPos.y, camPos.z], [pos.x, pos.y + 0.3, pos.z]);
+    const camPos = worldPos.clone().add(dir.multiplyScalar(2.6)).add(new THREE.Vector3(0, 0.5, 0));
+    cameraFocus.focus(
+      [camPos.x, camPos.y, camPos.z],
+      [worldPos.x, worldPos.y + 0.3, worldPos.z]
+    );
     serviceModal.open(id);
   };
 
@@ -210,10 +218,11 @@ function CaseStudyFruit({
   });
 
   const openCaseStudy = () => {
-    const dir = pos.clone().setY(0).normalize();
+    const worldPos = pos.clone().add(TREE_POSITION);
+    const dir = worldPos.clone().setY(0).normalize();
     if (dir.lengthSq() === 0) dir.set(0, 0, 1);
-    const camPos = pos.clone().add(dir.multiplyScalar(2.6)).add(new THREE.Vector3(0, 0.4, 0));
-    cameraFocus.focus([camPos.x, camPos.y, camPos.z], [pos.x, pos.y, pos.z]);
+    const camPos = worldPos.clone().add(dir.multiplyScalar(2.6)).add(new THREE.Vector3(0, 0.4, 0));
+    cameraFocus.focus([camPos.x, camPos.y, camPos.z], [worldPos.x, worldPos.y, worldPos.z]);
     caseStudyModal.open(id);
   };
 
@@ -338,7 +347,7 @@ export default function Tree() {
   const trunkGeo = useMemo(() => createTrunkCurve(), []);
 
   return (
-    <group ref={group}>
+    <group ref={group} position={TREE_POSITION}>
       {/* Curved organic main trunk */}
       <mesh geometry={trunkGeo} castShadow receiveShadow>
         <meshStandardMaterial color="#4a3324" roughness={0.8} />
