@@ -1,26 +1,135 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --color-coral: #ff6b4a;
+  --color-coral-light: #ff8a70;
+  --color-coral-dark: #e55030;
+  --color-honey: #ffb23e;
+  --color-honey-light: #ffc96a;
+  --color-sprout: #4fb286;
+  --color-sprout-light: #72c9a0;
+  --color-leaf: #5fc79a;
+  --color-leaf-dark: #3b8f6a;
+  --color-paper: #fff6ee;
+  --color-paper-panel: #fff0e6;
+  --color-ink: #2a211c;
+  --color-ink-muted: rgba(42, 33, 28, 0.6);
+  --color-ink-faint: rgba(42, 33, 28, 0.08);
+  --color-blush: #ffd9c2;
+  --color-skin: #ffd9b0;
+  --color-brown-muted: #9c7b66;
+
+  /* underground progression */
+  --color-soil-1: #4a3324;
+  --color-soil-2: #35241a;
+  --color-soil-3: #241811;
+  --color-soil-4: #150d09;
+  --color-root-glow: #ffd25f;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-coral: var(--color-coral);
+  --color-coral-light: var(--color-coral-light);
+  --color-coral-dark: var(--color-coral-dark);
+  --color-honey: var(--color-honey);
+  --color-honey-light: var(--color-honey-light);
+  --color-sprout: var(--color-sprout);
+  --color-sprout-light: var(--color-sprout-light);
+  --color-leaf: var(--color-leaf);
+  --color-leaf-dark: var(--color-leaf-dark);
+  --color-paper: var(--color-paper);
+  --color-paper-panel: var(--color-paper-panel);
+  --color-ink: var(--color-ink);
+  --color-blush: var(--color-blush);
+  --color-skin: var(--color-skin);
+  --color-brown-muted: var(--color-brown-muted);
+
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-poppins);
+  --font-mono: var(--font-jetbrains);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: auto;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--color-ink);
+  background-color: var(--color-paper);
+}
+
+.font-display {
+  font-family: var(--font-poppins);
+}
+
+::selection {
+  background: var(--color-coral);
+  color: white;
+}
+
+@keyframes scroll-cue-bounce {
+  0%, 100% { transform: rotate(45deg) translate(0, 0); }
+  50% { transform: rotate(45deg) translate(4px, 4px); }
+}
+
+.scroll-cue-chevron {
+  animation: scroll-cue-bounce 1.6s ease-in-out infinite;
+}
+
+@keyframes loader-seed-bounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+
+@keyframes loader-sprout-grow {
+  0%, 100% { transform: scaleY(0.7) rotate(-4deg); }
+  50% { transform: scaleY(1) rotate(4deg); }
+}
+
+.loader-seed {
+  animation: loader-seed-bounce 1s ease-in-out infinite;
+}
+
+.loader-sprout {
+  animation: loader-sprout-grow 1s ease-in-out infinite;
+}
+
+@keyframes hero-rise {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Held invisible until .hero-rise-play is added (see Overlay.tsx), so the
+   staggered entrance plays once as the loader clears rather than on mount,
+   which would otherwise finish underneath the still-opaque loader. */
+.hero-rise {
+  opacity: 0;
+  transform: translateY(18px);
+}
+
+.hero-rise-play {
+  animation: hero-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.25s ease-out forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-cue-chevron,
+  .loader-seed,
+  .loader-sprout {
+    animation: none;
+  }
+
+  .hero-rise {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
 }
